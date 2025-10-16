@@ -1,0 +1,499 @@
+
+# =======================================================
+# XDL NCD CONVERSION MODE $Revision: 1.01$
+# time: Wed Oct 15 15:18:00 2025
+
+# =======================================================
+
+
+# =======================================================
+# The syntax for the design statement is:                
+# design <design_name> <part> <ncd version>;             
+# or                                                     
+# design <design_name> <device> <package> <speed> <ncd_version>
+# =======================================================
+design "ask_with_pll" xc5vlx110tff1136-1 v3.2 ,
+  cfg "
+       _DESIGN_PROP:P3_PLACE_OPTIONS:EFFORT_LEVEL:high
+       _DESIGN_PROP::P3_PLACED:
+       _DESIGN_PROP::P3_PLACE_OPTIONS:
+       _DESIGN_PROP::PK_NGMTIMESTAMP:1759989095";
+
+
+#  =======================================================
+#  The syntax for instances is:
+#      instance <name> <sitedef>, placed <tile> <site>, cfg <string> ;
+#  or
+#      instance <name> <sitedef>, unplaced, cfg <string> ;
+# 
+#  For typing convenience you can abbreviate instance to inst.
+# 
+#  For IOs there are two special keywords: bonded and unbonded
+#  that can be used to designate whether the PAD of an unplaced IO is
+#  bonded out. If neither keyword is specified, bonded is assumed.
+# 
+#  The bonding of placed IOs is determined by the site they are placed in.
+# 
+#  If you specify bonded or unbonded for an instance that is not an
+#  IOB it is ignored.
+# 
+#  Shown below are three examples for IOs. 
+#     instance IO1 IOB, unplaced ;          # This will be bonded
+#     instance IO1 IOB, unplaced bonded ;   # This will be bonded
+#     instance IO1 IOB, unplaced unbonded ; # This will be unbonded
+#  =======================================================
+inst "clk_pin" "IOB",placed CIOB_X28Y54 AH15  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::I OUSED::#OFF PADOUTUSED::#OFF
+       PULLTYPE::#OFF TUSED::#OFF INBUF:pll0/ibufg_inst: PAD:clk_pin:
+         ISTANDARD::LVCMOS33 "
+  ;
+inst "antenna_net" "IOB",placed LIOB_X0Y46 AD30  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::#OFF OUSED::0 PADOUTUSED::#OFF
+       PULLTYPE::#OFF TUSED::#OFF OUTBUF:antenna_net_OBUF: PAD:antenna_net:
+         DRIVE::12  OSTANDARD::LVCMOS25  SLEW::SLOW "
+  ;
+inst "pll_reset" "IOB",placed LIOB_X0Y52 W29  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::I OUSED::#OFF PADOUTUSED::#OFF
+       PULLTYPE::#OFF TUSED::#OFF INBUF:pll_reset_IBUF: PAD:pll_reset:
+         ISTANDARD::LVCMOS25 "
+  ;
+inst "data_in" "IOB",placed LIOB_X0Y100 U25  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::I OUSED::#OFF PADOUTUSED::#OFF
+       PULLTYPE::PULLDOWN TUSED::#OFF INBUF:data_in_IBUF: PAD:data_in: PULL:ProtoComp2.PULL:
+         ISTANDARD::LVCMOS33 "
+  ;
+inst "sma_out_clk" "IOB",placed CIOB_X28Y102 J20  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::#OFF OUSED::0 PADOUTUSED::#OFF
+       PULLTYPE::#OFF TUSED::#OFF OUTBUF:sma_out_clk_OBUF: PAD:sma_out_clk:
+         DRIVE::12  OSTANDARD::LVCMOS33  SLEW::FAST "
+  ;
+inst "pll_locked_out" "IOB",placed CIOB_X28Y61 AE17  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::#OFF OUSED::0 PADOUTUSED::#OFF
+       PULLTYPE::#OFF TUSED::#OFF OUTBUF:pll_locked_out_OBUF: PAD:pll_locked_out:
+         DRIVE::12  OSTANDARD::LVCMOS25  SLEW::SLOW "
+  ;
+inst "sma_out_enable" "IOB",placed LIOB_X0Y25 AG27  ,
+  cfg " DIFFI_INUSED::#OFF DIFF_TERM::#OFF IMUX::I OUSED::#OFF PADOUTUSED::#OFF
+       PULLTYPE::PULLDOWN TUSED::#OFF INBUF:sma_out_enable_IBUF: PAD:sma_out_enable:
+       PULL:ProtoComp2.PULL.1:
+         ISTANDARD::LVCMOS33 "
+  ;
+inst "pll0/pll_adv_i" "PLL_ADV",placed CMT_X28Y20 PLL_ADV_X0Y0  ,
+  cfg " BANDWIDTH::OPTIMIZED CLKBRSTINV::#OFF CLKFBOUT_DESKEW_ADJUST::0
+       CLKINSELINV::CLKINSEL CLKOUT0_DESKEW_ADJUST::0 CLKOUT1_DESKEW_ADJUST::0
+       CLKOUT2_DESKEW_ADJUST::0 CLKOUT3_DESKEW_ADJUST::0 CLKOUT4_DESKEW_ADJUST::0
+       CLKOUT5_DESKEW_ADJUST::0 CMT_TEST_CLK_SEL::7 COMPENSATION::INTERNAL
+       DIVCLK_DIVIDE::1 ENOUTSYNCINV::#OFF EN_REL::FALSE LOCK_FAST_FILTER::HIGH
+       LOCK_SLOW_FILTER::HIGH MANPDLFINV::#OFF MANPULFINV::#OFF PLL_2_DCM1_CLK_SEL::6
+       PLL_2_DCM2_CLK_SEL::6 PLL_AVDD_COMP_SET::3 PLL_AVDD_VBG_PD::1 PLL_AVDD_VBG_SEL::9
+       PLL_CLK0MX::0 PLL_CLK1MX::0 PLL_CLK2MX::0 PLL_CLK3MX::0 PLL_CLK4MX::0
+       PLL_CLK5MX::0 PLL_CLKBURST_CNT::0 PLL_CLKBURST_ENABLE::FALSE PLL_CLKCNTRL::0
+       PLL_CLKFBMX::0 PLL_CLKFBOUT2_EDGE::TRUE PLL_CLKFBOUT2_NOCOUNT::TRUE
+       PLL_CLKFBOUT_EDGE::#OFF PLL_CLKFBOUT_EN::#OFF PLL_CLKFBOUT_NOCOUNT::#OFF
+       PLL_CLKFB_MUX_SEL::0 PLL_CLKIN_MUX_SEL::0 PLL_CLKOUT0_EDGE::#OFF
+       PLL_CLKOUT0_EN::#OFF PLL_CLKOUT0_NOCOUNT::#OFF PLL_CLKOUT1_EDGE::#OFF
+       PLL_CLKOUT1_EN::#OFF PLL_CLKOUT1_NOCOUNT::#OFF PLL_CLKOUT2_EDGE::#OFF
+       PLL_CLKOUT2_EN::#OFF PLL_CLKOUT2_NOCOUNT::#OFF PLL_CLKOUT3_EDGE::#OFF
+       PLL_CLKOUT3_EN::#OFF PLL_CLKOUT3_NOCOUNT::#OFF PLL_CLKOUT4_EDGE::#OFF
+       PLL_CLKOUT4_EN::#OFF PLL_CLKOUT4_NOCOUNT::#OFF PLL_CLKOUT5_EDGE::#OFF
+       PLL_CLKOUT5_EN::#OFF PLL_CLKOUT5_NOCOUNT::#OFF PLL_CP::#OFF PLL_CP_BIAS_TRIP_SHIFT::FALSE
+       PLL_CP_RES::1 PLL_DIRECT_PATH_CNTRL::FALSE PLL_DIVCLK_EDGE::#OFF
+       PLL_DIVCLK_NOCOUNT::#OFF PLL_DVDD_COMP_SET::3 PLL_DVDD_VBG_PD::1
+       PLL_DVDD_VBG_SEL::9 PLL_EN::FALSE PLL_EN_DLY::#OFF PLL_EN_TCLK0::FALSE
+       PLL_EN_TCLK1::FALSE PLL_EN_TCLK2::FALSE PLL_EN_TCLK3::FALSE PLL_EN_TCLK4::FALSE
+       PLL_EN_VCO0::TRUE PLL_EN_VCO1::TRUE PLL_EN_VCO2::TRUE PLL_EN_VCO3::TRUE
+       PLL_EN_VCO4::TRUE PLL_EN_VCO5::TRUE PLL_EN_VCO6::TRUE PLL_EN_VCO7::TRUE
+       PLL_EN_VCO_DIV1::FALSE PLL_EN_VCO_DIV6::FALSE PLL_INC_FLOCK::TRUE
+       PLL_INC_SLOCK::TRUE PLL_INTFB::#OFF PLL_LFHF::#OFF PLL_LF_NEN::3
+       PLL_LF_PEN::0 PLL_LOCK_CNT::63 PLL_LOCK_CNT_RST_FAST::FALSE PLL_MAN_LF_EN::FALSE
+       PLL_NBTI_EN::FALSE PLL_PFD_CNTRL::8 PLL_PFD_DLY::1 PLL_PMCD_MODE::FALSE
+       PLL_PWRD_CFG::FALSE PLL_RES::#OFF PLL_SEL_SLIPD::FALSE PLL_SKEW_CNTRL::0
+       PLL_TCK4_SEL::0 PLL_UNLOCK_CNT::4 PLL_UNLOCK_CNT_RST_FAST::FALSE
+       PLL_VLFHIGH_DIS::FALSE RELINV::#OFF RESET_ON_LOSS_OF_LOCK::FALSE
+       RSTINV::RST RST_DEASSERT_CLK::CLKIN1 SKEWCLKIN1INV::#OFF SKEWCLKIN2INV::#OFF
+       SKEWRSTINV::#OFF SKEWSTBINV::#OFF WAIT_DCM1_LOCK::FALSE WAIT_DCM2_LOCK::FALSE
+       PLL_ADV:pll0/pll_adv_i:
+         CLKFBOUT_MULT::8  CLKFBOUT_PHASE::0.0  CLKIN1_PERIOD::20.000000
+        CLKIN2_PERIOD::0.000000  CLKOUT0_DIVIDE::1  CLKOUT0_DUTY_CYCLE::0.5
+        CLKOUT0_PHASE::0.0  CLKOUT1_DIVIDE::1  CLKOUT1_DUTY_CYCLE::0.5 
+       CLKOUT1_PHASE::0.0  CLKOUT2_DIVIDE::1  CLKOUT2_DUTY_CYCLE::0.5  CLKOUT2_PHASE::0.0
+        CLKOUT3_DIVIDE::1  CLKOUT3_DUTY_CYCLE::0.5  CLKOUT3_PHASE::0.0 
+       CLKOUT4_DIVIDE::1  CLKOUT4_DUTY_CYCLE::0.5  CLKOUT4_PHASE::0.0  CLKOUT5_DIVIDE::1
+        CLKOUT5_DUTY_CYCLE::0.5  CLKOUT5_PHASE::0.0  PLL_CLKFBOUT2_DT::000000
+        PLL_CLKFBOUT2_HT::000001  PLL_CLKFBOUT2_LT::000001  PLL_EN_CNTRL::001110110000111100100001010110100000101100100000000001001100010111100110100110
+        PLL_FLOCK::000000  PLL_IN_DLY_SET::000000000  PLL_LOCK_FB_P1::01000
+        PLL_LOCK_FB_P2::01000  PLL_LOCK_REF_P1::01000  PLL_LOCK_REF_P2::01000
+        PLL_MISC::0000  PLL_OPT_INV::000000  REF_JITTER::0.1 "
+  ;
+inst "pll0/bufg_out_inst" "BUFG",placed CLK_BUFGMUX_X72Y88 BUFGCTRL_X0Y0  ,
+  cfg " BUFG:pll0/bufg_out_inst: "
+  ;
+inst "antenna_net_OBUF" "SLICEM",placed CLBLM_X12Y30 SLICE_X20Y30  ,
+  cfg " A5LUT::#OFF A5RAMMODE::#OFF A6LUT::#OFF A6RAMMODE::#OFF ACY0::#OFF
+       ADI1MUX::#OFF AFF::#OFF AFFINIT::#OFF AFFMUX::#OFF AFFSR::#OFF AOUTMUX::#OFF
+       AUSED::#OFF B5LUT::#OFF B5RAMMODE::#OFF B6LUT::#OFF B6RAMMODE::#OFF
+       BCY0::#OFF BDI1MUX::#OFF BFF::#OFF BFFINIT::#OFF BFFMUX::#OFF BFFSR::#OFF
+       BOUTMUX::#OFF BUSED::#OFF C5LUT::#OFF C5RAMMODE::#OFF C6LUT::#OFF
+       C6RAMMODE::#OFF CCY0::#OFF CDI1MUX::#OFF CEUSED::#OFF CFF::#OFF CFFINIT::#OFF
+       CFFMUX::#OFF CFFSR::#OFF CLKINV::#OFF COUTMUX::#OFF COUTUSED::#OFF
+       CUSED::#OFF D5LUT::#OFF D5RAMMODE::#OFF D6LUT:anchor/lut_pass:#LUT:O6=(A5*A4)
+       D6RAMMODE::#OFF DCY0::#OFF DFF::#OFF DFFINIT::#OFF DFFMUX::#OFF DFFSR::#OFF
+       DOUTMUX::#OFF DUSED::0 PRECYINIT::#OFF REVUSED::#OFF SRUSED::#OFF
+       SYNC_ATTR::#OFF WA7USED::#OFF WA8USED::#OFF WEMUX::#OFF "
+  ;
+inst "sma_out_clk_OBUF" "SLICEL",placed CLBLM_X17Y66 SLICE_X28Y66  ,
+  cfg " A5LUT::#OFF A6LUT:sma_out_clk1:#LUT:O6=(A3*A5) ACY0::#OFF AFF::#OFF
+       AFFINIT::#OFF AFFMUX::#OFF AFFSR::#OFF AOUTMUX::#OFF AUSED::0 B5LUT::#OFF
+       B6LUT::#OFF BCY0::#OFF BFF::#OFF BFFINIT::#OFF BFFMUX::#OFF BFFSR::#OFF
+       BOUTMUX::#OFF BUSED::#OFF C5LUT::#OFF C6LUT::#OFF CCY0::#OFF CEUSED::#OFF
+       CFF::#OFF CFFINIT::#OFF CFFMUX::#OFF CFFSR::#OFF CLKINV::#OFF COUTMUX::#OFF
+       COUTUSED::#OFF CUSED::#OFF D5LUT::#OFF D6LUT::#OFF DCY0::#OFF DFF::#OFF
+       DFFINIT::#OFF DFFMUX::#OFF DFFSR::#OFF DOUTMUX::#OFF DUSED::#OFF
+       PRECYINIT::#OFF REVUSED::#OFF SRUSED::#OFF SYNC_ATTR::#OFF "
+  ;
+inst "XDL_DUMMY_IOI_X0Y25_ILOGIC_X0Y51" "ILOGIC",placed IOI_X0Y25 ILOGIC_X0Y51  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D:O "
+  ;
+inst "XDL_DUMMY_IOI_X0Y46_OLOGIC_X0Y93" "OLOGIC",placed IOI_X0Y46 OLOGIC_X0Y93  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D1:OQ "
+  ;
+inst "XDL_DUMMY_IOI_X0Y52_ILOGIC_X0Y105" "ILOGIC",placed IOI_X0Y52 ILOGIC_X0Y105  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D:O "
+  ;
+inst "XDL_DUMMY_IOI_X0Y100_ILOGIC_X0Y201" "ILOGIC",placed IOI_X0Y100 ILOGIC_X0Y201  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D:O "
+  ;
+inst "XDL_DUMMY_INT_X28Y24_TIEOFF_X28Y24" "TIEOFF",placed INT_X28Y24 TIEOFF_X28Y24  ,
+  cfg "_NO_USER_LOGIC:: _VCC_SOURCE::KEEP1 _GND_SOURCE::HARD0 "
+  ;
+inst "XDL_DUMMY_INT_X28Y25_TIEOFF_X28Y25" "TIEOFF",placed INT_X28Y25 TIEOFF_X28Y25  ,
+  cfg "_NO_USER_LOGIC:: _GND_SOURCE::HARD0 "
+  ;
+inst "XDL_DUMMY_INT_X28Y26_TIEOFF_X28Y26" "TIEOFF",placed INT_X28Y26 TIEOFF_X28Y26  ,
+  cfg "_NO_USER_LOGIC:: _GND_SOURCE::HARD0 "
+  ;
+inst "XDL_DUMMY_IOI_X28Y54_ILOGIC_X1Y109" "ILOGIC",placed IOI_X28Y54 ILOGIC_X1Y109  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D:O "
+  ;
+inst "XDL_DUMMY_IOI_X28Y61_OLOGIC_X1Y122" "OLOGIC",placed IOI_X28Y61 OLOGIC_X1Y122  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D1:OQ "
+  ;
+inst "XDL_DUMMY_IOI_X28Y102_OLOGIC_X1Y205" "OLOGIC",placed IOI_X28Y102 OLOGIC_X1Y205  ,
+  cfg "_NO_USER_LOGIC::  _ROUTETHROUGH:D1:OQ "
+  ;
+
+#  ================================================
+#  The syntax for nets is:
+#     net <name> <type>,
+#       outpin <inst_name> <inst_pin>,
+#       .
+#       .
+#       inpin <inst_name> <inst_pin>,
+#       .
+#       .
+#       pip <tile> <wire0> <dir> <wire1> , # [<rt>]
+#       .
+#       .
+#       ;
+# 
+#  There are three available wire types: wire, power and ground.
+#  If no type is specified, wire is assumed.
+# 
+#  Wire indicates that this a normal wire.
+#  Power indicates that this net is tied to a DC power source.
+#  You can use "power", "vcc" or "vdd" to specify a power net.
+# 
+#  Ground indicates that this net is tied to ground.
+#  You can use "ground", or "gnd" to specify a ground net.
+# 
+#  The <dir> token will be one of the following:
+# 
+#     Symbol Description
+#     ====== ==========================================
+#       ==   Bidirectional, unbuffered.
+#       =>   Bidirectional, buffered in one direction.
+#       =-   Bidirectional, buffered in both directions.
+#       ->   Directional, buffered.
+# 
+#  No pips exist for unrouted nets.
+#  ================================================
+net "GLOBAL_LOGIC0_0" gnd, 
+  outpin "XDL_DUMMY_INT_X28Y26_TIEOFF_X28Y26" HARD0 ,
+  inpin "pll0/pll_adv_i" DI0 ,
+  inpin "pll0/pll_adv_i" DI1 ,
+  inpin "pll0/pll_adv_i" DI2 ,
+  inpin "pll0/pll_adv_i" DI3 ,
+  inpin "pll0/pll_adv_i" DI4 ,
+  inpin "pll0/pll_adv_i" DI5 ,
+  inpin "pll0/pll_adv_i" DI6 ,
+  inpin "pll0/pll_adv_i" DI7 ,
+  inpin "pll0/pll_adv_i" DI8 ,
+  inpin "pll0/pll_adv_i" DI9 ,
+  pip CMT_X28Y20 CMT_IMUX_B12_6 -> CMT_PLL_ADV_DI9 , 
+  pip CMT_X28Y20 CMT_IMUX_B13_6 -> CMT_PLL_ADV_DI6 , 
+  pip CMT_X28Y20 CMT_IMUX_B15_6 -> CMT_PLL_ADV_DI0 , 
+  pip CMT_X28Y20 CMT_IMUX_B19_6 -> CMT_PLL_ADV_DI7 , 
+  pip CMT_X28Y20 CMT_IMUX_B20_6 -> CMT_PLL_ADV_DI4 , 
+  pip CMT_X28Y20 CMT_IMUX_B2_6 -> CMT_PLL_ADV_DI5 , 
+  pip CMT_X28Y20 CMT_IMUX_B30_6 -> CMT_PLL_ADV_DI8 , 
+  pip CMT_X28Y20 CMT_IMUX_B3_6 -> CMT_PLL_ADV_DI2 , 
+  pip CMT_X28Y20 CMT_IMUX_B44_6 -> CMT_PLL_ADV_DI3 , 
+  pip CMT_X28Y20 CMT_IMUX_B9_6 -> CMT_PLL_ADV_DI1 , 
+  pip INT_X28Y26 FAN2 -> FAN_BOUNCE2 , 
+  pip INT_X28Y26 FAN6 -> FAN_BOUNCE6 , 
+  pip INT_X28Y26 FAN_BOUNCE2 -> IMUX_B12 , 
+  pip INT_X28Y26 FAN_BOUNCE2 -> IMUX_B13 , 
+  pip INT_X28Y26 FAN_BOUNCE2 -> IMUX_B19 , 
+  pip INT_X28Y26 FAN_BOUNCE2 -> IMUX_B30 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B15 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B2 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B20 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B3 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B44 , 
+  pip INT_X28Y26 FAN_BOUNCE6 -> IMUX_B9 , 
+  pip INT_X28Y26 GND_WIRE -> FAN2 , 
+  pip INT_X28Y26 GND_WIRE -> FAN6 , 
+  ;
+net "GLOBAL_LOGIC0_1" gnd, 
+  outpin "XDL_DUMMY_INT_X28Y25_TIEOFF_X28Y25" HARD0 ,
+  inpin "pll0/pll_adv_i" DADDR0 ,
+  inpin "pll0/pll_adv_i" DADDR1 ,
+  inpin "pll0/pll_adv_i" DADDR2 ,
+  inpin "pll0/pll_adv_i" DADDR3 ,
+  inpin "pll0/pll_adv_i" DCLK ,
+  inpin "pll0/pll_adv_i" DEN ,
+  inpin "pll0/pll_adv_i" DI10 ,
+  inpin "pll0/pll_adv_i" DI11 ,
+  inpin "pll0/pll_adv_i" DI12 ,
+  inpin "pll0/pll_adv_i" DI13 ,
+  inpin "pll0/pll_adv_i" DI14 ,
+  inpin "pll0/pll_adv_i" DI15 ,
+  inpin "pll0/pll_adv_i" DWE ,
+  pip CMT_X28Y20 CMT_CLK_B0_5 -> CMT_PLL_ADV_DCLK , 
+  pip CMT_X28Y20 CMT_IMUX_B12_5 -> CMT_PLL_ADV_DADDR3 , 
+  pip CMT_X28Y20 CMT_IMUX_B1_5 -> CMT_PLL_ADV_DADDR2 , 
+  pip CMT_X28Y20 CMT_IMUX_B20_5 -> CMT_PLL_ADV_DADDR0 , 
+  pip CMT_X28Y20 CMT_IMUX_B28_5 -> CMT_PLL_ADV_DI13 , 
+  pip CMT_X28Y20 CMT_IMUX_B35_5 -> CMT_PLL_ADV_DI10 , 
+  pip CMT_X28Y20 CMT_IMUX_B37_5 -> CMT_PLL_ADV_DADDR1 , 
+  pip CMT_X28Y20 CMT_IMUX_B38_5 -> CMT_PLL_ADV_DEN , 
+  pip CMT_X28Y20 CMT_IMUX_B41_5 -> CMT_PLL_ADV_DI11 , 
+  pip CMT_X28Y20 CMT_IMUX_B45_5 -> CMT_PLL_ADV_DI14 , 
+  pip CMT_X28Y20 CMT_IMUX_B46_5 -> CMT_PLL_ADV_DI12 , 
+  pip CMT_X28Y20 CMT_IMUX_B4_5 -> CMT_PLL_ADV_DI15 , 
+  pip CMT_X28Y20 CMT_IMUX_B9_5 -> CMT_PLL_ADV_DWE , 
+  pip INT_X28Y25 FAN2 -> FAN_BOUNCE2 , 
+  pip INT_X28Y25 FAN3 -> FAN_BOUNCE3 , 
+  pip INT_X28Y25 FAN4 -> FAN_BOUNCE4 , 
+  pip INT_X28Y25 FAN5 -> FAN_BOUNCE5 , 
+  pip INT_X28Y25 FAN_BOUNCE2 -> IMUX_B12 , 
+  pip INT_X28Y25 FAN_BOUNCE3 -> IMUX_B28 , 
+  pip INT_X28Y25 FAN_BOUNCE3 -> IMUX_B4 , 
+  pip INT_X28Y25 FAN_BOUNCE3 -> IMUX_B45 , 
+  pip INT_X28Y25 FAN_BOUNCE3 -> IMUX_B46 , 
+  pip INT_X28Y25 FAN_BOUNCE3 -> IMUX_B9 , 
+  pip INT_X28Y25 FAN_BOUNCE4 -> CLK_B0 , 
+  pip INT_X28Y25 FAN_BOUNCE4 -> IMUX_B1 , 
+  pip INT_X28Y25 FAN_BOUNCE4 -> IMUX_B20 , 
+  pip INT_X28Y25 FAN_BOUNCE4 -> IMUX_B37 , 
+  pip INT_X28Y25 FAN_BOUNCE4 -> IMUX_B38 , 
+  pip INT_X28Y25 FAN_BOUNCE5 -> IMUX_B35 , 
+  pip INT_X28Y25 FAN_BOUNCE5 -> IMUX_B41 , 
+  pip INT_X28Y25 GND_WIRE -> FAN2 , 
+  pip INT_X28Y25 GND_WIRE -> FAN3 , 
+  pip INT_X28Y25 GND_WIRE -> FAN4 , 
+  pip INT_X28Y25 GND_WIRE -> FAN5 , 
+  ;
+net "GLOBAL_LOGIC0_2" gnd, 
+  outpin "XDL_DUMMY_INT_X28Y24_TIEOFF_X28Y24" HARD0 ,
+  inpin "pll0/pll_adv_i" DADDR4 ,
+  pip CMT_X28Y20 CMT_IMUX_B35_4 -> CMT_PLL_ADV_DADDR4 , 
+  pip INT_X28Y24 FAN5 -> FAN_BOUNCE5 , 
+  pip INT_X28Y24 FAN_BOUNCE5 -> IMUX_B35 , 
+  pip INT_X28Y24 GND_WIRE -> FAN5 , 
+  ;
+net "GLOBAL_LOGIC1_0" vcc, 
+  outpin "XDL_DUMMY_INT_X28Y24_TIEOFF_X28Y24" KEEP1 ,
+  inpin "pll0/pll_adv_i" CLKINSEL ,
+  pip CMT_X28Y20 CMT_IMUX_B30_4 -> CMT_PLL_ADV_CLKINSEL , 
+  pip INT_X28Y24 KEEP1_WIRE -> IMUX_B30 , 
+  ;
+net "antenna_net" , cfg " _BELSIG:PAD,PAD,antenna_net:antenna_net",
+  ;
+net "antenna_net_OBUF" , 
+  outpin "antenna_net_OBUF" D ,
+  inpin "antenna_net" O ,
+  pip CLBLM_X12Y30 M_D -> SITE_LOGIC_OUTS15 , 
+  pip INT_X0Y46 CTRL1 -> CTRL_BOUNCE1 , 
+  pip INT_X0Y46 CTRL_BOUNCE1 -> IMUX_B47 , 
+  pip INT_X0Y46 NW2END0 -> CTRL1 , 
+  pip INT_X10Y31 WL2END0 -> WN2BEG0 , 
+  pip INT_X12Y30 LOGIC_OUTS15 -> WL2BEG_S0 , 
+  pip INT_X1Y45 WN5END1 -> NW2BEG0 , 
+  pip INT_X4Y43 WL5END1 -> WN5BEG1 , 
+  pip INT_X9Y31 WN2END_S0 -> LV0 , 
+  pip INT_X9Y43 LV12 -> WL5BEG1 , 
+  pip IOI_X0Y46 IOI_IMUX_B47 -> IOI_O10 , 
+  pip IOI_X0Y46 IOI_O10 -> IOI_O_PINWIRE0 ,  #  _ROUTETHROUGH:D1:OQ "XDL_DUMMY_IOI_X0Y46_OLOGIC_X0Y93" D1 -> OQ
+  pip IOI_X0Y46 IOI_O_PINWIRE0 -> IOI_O0 , 
+  ;
+net "clk_pin" , cfg " _BELSIG:PAD,PAD,clk_pin:clk_pin",
+  ;
+net "data_in" , cfg " _BELSIG:PAD,PAD,data_in:data_in",
+  ;
+net "data_in_IBUF" , 
+  outpin "data_in" I ,
+  inpin "antenna_net_OBUF" D4 ,
+  pip CLBLM_X12Y30 SITE_IMUX_B22 -> M_D4 , 
+  pip INT_INTERFACE_X0Y100 INT_INTERFACE_LOGIC_OUTS_B11 -> INT_INTERFACE_LOGIC_OUTS11 , 
+  pip INT_X0Y100 LOGIC_OUTS11 -> SE5BEG2 , 
+  pip INT_X12Y30 SR2END2 -> IMUX_B22 , 
+  pip INT_X12Y32 SW5MID2 -> SR2BEG2 , 
+  pip INT_X12Y35 LV6 -> SW5BEG2 , 
+  pip INT_X12Y47 LV0 =- LV18 , 
+  pip INT_X12Y65 LV0 =- LV18 , 
+  pip INT_X12Y83 LV18 =- LH0 , 
+  pip INT_X2Y92 SR5END2 -> SE5BEG2 , 
+  pip INT_X2Y97 SE5END2 -> SR5BEG2 , 
+  pip INT_X4Y84 SR5END2 -> SE2BEG2 , 
+  pip INT_X4Y89 SE5END2 -> SR5BEG2 , 
+  pip INT_X5Y83 SE2END2 -> LH0 , 
+  pip IOI_X0Y100 IOI_D0 -> IOI_I0 ,  #  _ROUTETHROUGH:D:O "XDL_DUMMY_IOI_X0Y100_ILOGIC_X0Y201" D -> O
+  pip IOI_X0Y100 IOI_I0 -> IOI_LOGIC_OUTS11 , 
+  pip IOI_X0Y100 IOI_IBUF0 -> IOI_D0 , 
+  ;
+net "pll0/clk_in_buf" , 
+  outpin "clk_pin" I ,
+  inpin "pll0/pll_adv_i" CLKIN1 ,
+  pip CLK_HROW_X28Y29 CLK_HROW_CLK_METAL9_4 -> CLK_HROW_CLK_H_METAL9_4 , 
+  pip CLK_IOB_B_X28Y50 CLK_IOB_CLK_BUF4 -> CLK_IOB_IOB_CLKP4 , 
+  pip CLK_IOB_B_X28Y50 CLK_IOB_PAD_CLK4 -> CLK_IOB_CLK_BUF4 , 
+  pip CMT_X28Y20 CMT_GIOB4 -> CMT_PLL_CLKIN1 , 
+  pip IOI_X28Y54 IOI_D0 -> IOI_I0 ,  #  _ROUTETHROUGH:D:O "XDL_DUMMY_IOI_X28Y54_ILOGIC_X1Y109" D -> O
+  pip IOI_X28Y54 IOI_I0 -> IOI_I_2GCLK0 , 
+  pip IOI_X28Y54 IOI_IBUF0 -> IOI_D0 , 
+  ;
+net "pll0/clkfb" , 
+  outpin "pll0/pll_adv_i" CLKFBOUT ,
+  inpin "pll0/pll_adv_i" CLKFBIN ,
+  pip CMT_X28Y20 CMT_CLK_11 -> CMT_PLL_CLK_FB_FROM_DCM , 
+  pip CMT_X28Y20 CMT_PLL_CLKFB -> CMT_CLK_11 , 
+  pip CMT_X28Y20 CMT_PLL_CLK_FB_FROM_DCM -> CMT_PLL_CLKFBIN , 
+  ;
+net "pll0/pll_clk_unbuf" , 
+  outpin "pll0/pll_adv_i" CLKOUT0 ,
+  inpin "pll0/bufg_out_inst" I0 ,
+  pip CLK_BUFGMUX_X72Y88 CLK_BUFGMUX_MUXED_IN_CLKB_P0 -> CLK_BUFGMUX_PREMUX0_CLK0 , 
+  pip CLK_BUFGMUX_X72Y88 CLK_BUFGMUX_PREMUX0_CLK0 -> CLK_BUFGMUX_CLKP0_0 , 
+  pip CLK_CMT_BOT_X73Y23 CLK_CMT_CMT_CLK_12 -> CLK_IOB_MUXED_CLKOUT0 , 
+  pip CLK_CMT_BOT_X73Y34 CLK_IOB_MUXED_CLKIN0 -> CLK_IOB_MUXED_CLKOUT0 , 
+  pip CLK_CMT_BOT_X73Y45 CLK_IOB_MUXED_CLKIN0 -> CLK_IOB_MUXED_CLKOUT0 , 
+  pip CLK_IOB_B_X28Y50 CLK_IOB_MUXED_CLKIN0 -> CLK_IOB_MUXED_CLKOUT0 , 
+  pip CMT_X28Y20 CMT_PLL_CLKOUT0 -> CMT_CLK_12 , 
+  ;
+net "pll_clk" , 
+  outpin "pll0/bufg_out_inst" O ,
+  inpin "antenna_net_OBUF" D5 ,
+  inpin "sma_out_clk_OBUF" A5 ,
+  pip CLBLM_X12Y30 SITE_IMUX_B21 -> M_D5 , 
+  pip CLBLM_X17Y66 SITE_IMUX_B26 -> M_A5 , 
+  pip CLK_BUFGMUX_X72Y88 CLK_BUFGMUX_POSTMUX_GCLKP0 -> CLK_BUFGMUX_GCLKP0 , 
+  pip CLK_HROW_X28Y29 CLK_HROW_GCLK_BUF0 -> CLK_HROW_HCLKL_P9 , 
+  pip CLK_HROW_X28Y69 CLK_HROW_GCLK_BUF0 -> CLK_HROW_HCLKL_P9 , 
+  pip HCLK_X12Y29 HCLK_G_HCLK_P9 -> HCLK_LEAF_GCLK9 , 
+  pip HCLK_X17Y69 HCLK_G_HCLK_P9 -> HCLK_LEAF_GCLK9 , 
+  pip INT_X12Y30 FAN6 -> FAN_BOUNCE6 , 
+  pip INT_X12Y30 FAN_BOUNCE6 -> IMUX_B21 , 
+  pip INT_X12Y30 GCLK9 -> GFAN1 , 
+  pip INT_X12Y30 GFAN1 -> FAN6 , 
+  pip INT_X17Y66 FAN6 -> FAN_BOUNCE6 , 
+  pip INT_X17Y66 FAN_BOUNCE6 -> IMUX_B26 , 
+  pip INT_X17Y66 GCLK9 -> GFAN1 , 
+  pip INT_X17Y66 GFAN1 -> FAN6 , 
+  ;
+net "pll_locked_out" , cfg " _BELSIG:PAD,PAD,pll_locked_out:pll_locked_out",
+  ;
+net "pll_locked_out_OBUF" , 
+  outpin "pll0/pll_adv_i" LOCKED ,
+  inpin "pll_locked_out" O ,
+  pip CMT_X28Y20 CMT_PLL_ADV_LOCKED -> CMT_LOGIC_OUTS21_3 , 
+  pip INT_INTERFACE_X28Y23 INT_INTERFACE_LOGIC_OUTS_B21 -> INT_INTERFACE_LOGIC_OUTS21 , 
+  pip INT_X28Y23 LOGIC_OUTS21 -> NL2BEG_S0 , 
+  pip INT_X28Y23 NL2BEG_S0 -> LV0 , 
+  pip INT_X28Y41 LV0 =- LV18 , 
+  pip INT_X28Y59 LV18 -> NW5BEG0 , 
+  pip INT_X28Y61 BYP_BOUNCE_S4 -> IMUX_B41 , 
+  pip INT_X28Y62 BYP4 -> BYP_BOUNCE4 , 
+  pip INT_X28Y62 NL2BEG1 -> BYP4 , 
+  pip INT_X28Y62 NW5MID0 -> NL2BEG1 , 
+  pip IOI_X28Y61 IOI_IMUX_B41 -> IOI_O11 , 
+  pip IOI_X28Y61 IOI_O11 -> IOI_O_PINWIRE1 ,  #  _ROUTETHROUGH:D1:OQ "XDL_DUMMY_IOI_X28Y61_OLOGIC_X1Y122" D1 -> OQ
+  pip IOI_X28Y61 IOI_O_PINWIRE1 -> IOI_O1 , 
+  ;
+net "pll_reset" , cfg " _BELSIG:PAD,PAD,pll_reset:pll_reset",
+  ;
+net "pll_reset_IBUF" , 
+  outpin "pll_reset" I ,
+  inpin "pll0/pll_adv_i" RST ,
+  pip CMT_X28Y20 CMT_CTRL_B0_4 -> CMT_PLL_ADV_RST , 
+  pip INT_INTERFACE_X0Y52 INT_INTERFACE_LOGIC_OUTS_B11 -> INT_INTERFACE_LOGIC_OUTS11 , 
+  pip INT_X0Y52 LOGIC_OUTS11 -> SE2BEG2 , 
+  pip INT_X10Y33 LV0 =- LH18 , 
+  pip INT_X10Y51 LH6 -> LV18 , 
+  pip INT_X1Y51 SE2END2 -> LH0 , 
+  pip INT_X28Y24 CTRL0 -> CTRL_B0 , 
+  pip INT_X28Y24 SL2MID1 -> CTRL0 , 
+  pip INT_X28Y25 SE5MID2 -> SL2BEG1 , 
+  pip INT_X28Y28 SR5END2 -> SE5BEG2 , 
+  pip INT_X28Y33 LH0 -> SR5BEG2 , 
+  pip IOI_X0Y52 IOI_D0 -> IOI_I0 ,  #  _ROUTETHROUGH:D:O "XDL_DUMMY_IOI_X0Y52_ILOGIC_X0Y105" D -> O
+  pip IOI_X0Y52 IOI_I0 -> IOI_LOGIC_OUTS11 , 
+  pip IOI_X0Y52 IOI_IBUF0 -> IOI_D0 , 
+  ;
+net "sma_out_clk" , cfg " _BELSIG:PAD,PAD,sma_out_clk:sma_out_clk",
+  ;
+net "sma_out_clk_OBUF" , 
+  outpin "sma_out_clk_OBUF" A ,
+  inpin "sma_out_clk" O ,
+  pip CLBLM_X17Y66 M_A -> SITE_LOGIC_OUTS12 , 
+  pip INT_X17Y65 LOGIC_OUTS_S12 -> NE2BEG2 , 
+  pip INT_X18Y102 LV18 -> ER5BEG0 , 
+  pip INT_X18Y66 NE2END2 -> LV0 , 
+  pip INT_X18Y84 LV0 =- LV18 , 
+  pip INT_X23Y102 ER5END0 -> ES5BEG0 , 
+  pip INT_X26Y102 ES5MID0 -> ER2BEG1 , 
+  pip INT_X28Y102 ER2END1 -> FAN5 , 
+  pip INT_X28Y102 FAN5 -> FAN_BOUNCE5 , 
+  pip INT_X28Y102 FAN_BOUNCE5 -> IMUX_B47 , 
+  pip IOI_X28Y102 IOI_IMUX_B47 -> IOI_O10 , 
+  pip IOI_X28Y102 IOI_O10 -> IOI_O_PINWIRE0 ,  #  _ROUTETHROUGH:D1:OQ "XDL_DUMMY_IOI_X28Y102_OLOGIC_X1Y205" D1 -> OQ
+  pip IOI_X28Y102 IOI_O_PINWIRE0 -> IOI_O0 , 
+  ;
+net "sma_out_enable" , cfg " _BELSIG:PAD,PAD,sma_out_enable:sma_out_enable",
+  ;
+net "sma_out_enable_IBUF" , 
+  outpin "sma_out_enable" I ,
+  inpin "sma_out_clk_OBUF" A3 ,
+  pip CLBLM_X17Y66 SITE_IMUX_B27 -> M_A3 , 
+  pip INT_INTERFACE_X0Y25 INT_INTERFACE_LOGIC_OUTS_B11 -> INT_INTERFACE_LOGIC_OUTS11 , 
+  pip INT_X0Y25 LOGIC_OUTS11 -> NR5BEG1 , 
+  pip INT_X0Y30 NR5END1 -> ER2BEG2 , 
+  pip INT_X14Y66 LH6 -> ES5BEG1 , 
+  pip INT_X17Y66 ES5MID1 -> NL2BEG2 , 
+  pip INT_X17Y66 NL2BEG2 -> IMUX_B27 , 
+  pip INT_X2Y30 ER2END2 -> LV0 , 
+  pip INT_X2Y48 LV0 =- LV18 , 
+  pip INT_X2Y66 LV18 =- LH18 , 
+  pip IOI_X0Y25 IOI_D0 -> IOI_I0 ,  #  _ROUTETHROUGH:D:O "XDL_DUMMY_IOI_X0Y25_ILOGIC_X0Y51" D -> O
+  pip IOI_X0Y25 IOI_I0 -> IOI_LOGIC_OUTS11 , 
+  pip IOI_X0Y25 IOI_IBUF0 -> IOI_D0 , 
+  ;
+
+# =======================================================
+# SUMMARY
+# Number of Module Defs: 0
+# Number of Module Insts: 0
+# Number of Primitive Insts: 11
+# Number of Nets: 19
+# =======================================================
+
