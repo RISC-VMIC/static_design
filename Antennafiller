@@ -1,0 +1,110 @@
+// AntennaFiller.cpp - Custom TORC program for antenna interconnect saturation
+
+#include <torc/physical/Factory.hpp>
+#include <torc/physical/Design.hpp>
+#include <torc/physical/Net.hpp>
+#include <torc/physical/Pip.hpp>
+#include <torc/architecture/Database.hpp>  // Wire/PIP queries
+#include <torc/architecture/Tiles.hpp>     // Tile grid
+#include <torc/architecture/Sites.hpp>     // Site/tile details
+#include <torc/common/DeviceDesignator.hpp>
+#include <boost/gil/extension/io/bmp.hpp>  // For BMP mask
+#include <boost/gil/image.hpp>
+#include <boost/gil/typedefs.hpp>
+#include <fstream>
+#include <vector>
+#include <iostream>
+#include <queue>  // Wavefront BFS
+#include <set>    // Visited tracking
+
+int main(int argc, char** argv) {
+    // Device setup (for XC5VLX110T)
+    torc::common::DeviceDesignator device("xc5vlx110tff1136-1");
+    torc::architecture::Database db(device);
+
+    // Load XDL
+    torc::physical::Factory factory;
+    torc::physical::DesignSharedPtr design = factory.newDesignPtr("ask_with_pll", device);
+    std::ifstream xdlFile("ask_with_pll.xdl");
+    if (!xdlFile.is_open()) { std::cerr << "XDL error" << std::endl; return 1; }
+    design->read(xdlFile);
+    xdlFile.close();
+
+    // Find net (adjust if name differs)
+    torc::physical::NetSharedPtr net = design->findNet("antenna_net_OBUF");
+    if (!net) { std::cerr << "Net error" << std::endl; return 1; }
+
+    // Load BMP mask (black = allowed)
+    boost::gil::image<boost::gil::gray8_pixel_t> bmp;
+    try { boost::gil::read_image("black_outer_rectangle.bmp", bmp, boost::gil::bmp_tag()); }
+    catch (...) { std::cerr << "BMP error" << std::endl; return 1; }
+    auto view = bmp.const_view();
+    int width = view.width();  // 177
+    int height = view.height();  // 164
+    std::vector<std::vector<bool>> mask(width, std::vector<bool>(height, false));
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            if (view(x, y)[0] == 0) mask[x][y] = true;
+        }
+    }
+
+    // Seed from bus macro (add in Xilinx ISE if missing; adjust names)
+    torc::physical::InstanceSharedPtr macro = design->findInstance("bus_macro");
+    if (!macro) { std::cerr << "Macro error" << std::endl; return 1; }
+    torc::physical::InstancePinSharedPtr seedPin = macro->findInstancePin("O");
+    torc::architecture::Tilewire seedWire = seedPin->getTilewire();
+
+    // Wavefront flood
+    std::queue<torc::architecture::Tilewire> wavefront;
+    std::set<torc::architecture::Tilewire> visited;
+    wavefront.push(seedWire);
+    visited.insert(seedWire);
+
+    while (!wavefront.empty()) {
+        torc::architecture::Tilewire current = wavefront.front();
+        wavefront.pop();
+
+        // Fan-out arcs
+        torc::architecture::ArcVector arcs;
+        db.getWireUsage().getWireArcs(current, arcs);
+
+        for (const auto& arc : arcs) {
+            torc::architecture::Tilewire sink = arc.getSinkTilewire();
+            if (visited.count(sink)) continue;
+
+            torc::physical::Pip pip(current.getTile(), current.getWire(), sink.getWire(), sink.getTile());
+
+            // Checks
+            bool allowed = true;
+            // Mask: Tile coords
+            torc::architecture::TileIndex tileIdx = sink.getTile();
+            torc::architecture::TileRow row = db.getTiles().getTileRow(tileIdx);
+            torc::architecture::TileCol col = db.getTiles().getTileCol(tileIdx);
+            if (col >= width || row >= height || !mask[col][row]) allowed = false;
+
+            // Unused
+            if (net->containsPip(pip)) allowed = false;
+
+            // No static conflict
+            bool conflict = false;
+            for (auto& otherNet : design->nets()) {
+                if (otherNet.get() != net.get() && otherNet->containsPip(pip)) { conflict = true; break; }
+            }
+            if (conflict) allowed = false;
+
+            if (allowed) {
+                net->addPip(pip);
+                wavefront.push(sink);
+                visited.insert(sink);
+            }
+        }
+    }
+
+    // Export filled XDL
+    std::ofstream outXdl("filled_design.xdl");
+    design->xdlOut(outXdl);
+    outXdl.close();
+
+    std::cout << "Filled XDL created." << std::endl;
+    return 0;
+}
